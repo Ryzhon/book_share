@@ -5,21 +5,32 @@ class BooksController < ApplicationController
 
   # GET /books
   def index
-    @books = Book.all
-
-    render json: @books
+    @books = Book.includes(:tags, :genre).all
+    render json: @books.as_json(
+      include: {
+        tags: {
+          only: %i[id name]
+        },
+        genre: {
+          only: %i[id name]
+        }
+      }
+    )
   end
 
   # GET /books/:id
   def show
-    render json: @book
+    render json: @book.as_json(include: { tags: { only: %i[id name] }, genre: { only: %i[id name] } })
   end
 
   # POST /books
   def create
     @book = Book.new(book_params)
     if @book.save
-      render json: @book, status: :created, location: @book
+      render json: @book.as_json(include: { tags: { only: %i[id name] },
+                                            genre: {
+                                              only: %i[id name]
+                                            } }), status: :created
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -27,7 +38,7 @@ class BooksController < ApplicationController
 
   def update
     if @book.update(book_params)
-      render json: @book
+      render json: @book.as_json(include: { tags: { only: %i[id name] }, genre: { only: %i[id name] } })
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -48,6 +59,6 @@ class BooksController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def book_params
-    params.require(:book).permit(:title, :author, :genre_id, :summary, :status, :image_url, :isbn)
+    params.permit(:title, :author, :genre_id, :summary, :status, :image_url, :isbn, tag_ids: [])
   end
 end
