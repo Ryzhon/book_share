@@ -210,8 +210,8 @@ Metrics/BlockLength:
 # Metrics/AbcSize:
 #   Enabled: false
 
-# Metrics/MethodLength:
-#   Enabled: false
+Metrics/MethodLength:
+  Enabled: false
 
 # Style/SymbolArray:
 #   Enabled: false
