@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: 'postgis/postgis:14-3.4-alpine'
+    image: 'postgres:14-alpine'
     platform: linux/amd64
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
@@ -11,36 +11,36 @@ services:
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_USER: 'postgres'
     networks:
-      tocsa-net:
+      book_share-net:
 
   redis:
     image: 'redis:6-alpine'
     ports:
       - '6379:6379'
     networks:
-      tocsa-net:
+      book_share-net:
 
   web:
     build: .
     platform: linux/arm64/v8
     volumes:
-      - .:/ToCSA/
+      - .:/book_share/
       - bundle-data:/usr/local/bundle
     ports:
-      - '3000:3000'
+      - '5000:5000'
     depends_on:
       - db
-    command: /bin/sh -c "bundle && exec rails s -p 3000 -b '0.0.0.0'"
+    command: /bin/sh -c "bundle && exec rails s -p 5000 -b '0.0.0.0'"
 
     stdin_open: true
     tty: true
     environment:
       RAILS_ENV: 'development'
     networks:
-      tocsa-net:
+      book_share-net:
 
 networks:
-  tocsa-net:
+  book_share-net:
 
 volumes:
   bundle-data:

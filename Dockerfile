@@ -6,16 +6,14 @@ RUN apt-get update -qq && \
     apt-get install -y build-essential \
                        libpq-dev \
                        postgresql-client \
-                       vim \
-                       libgeos-dev
+                       vim
 
-RUN mkdir /ToCSA
-WORKDIR /ToCSA
+RUN mkdir /book_share
+WORKDIR /book_share
 
-COPY Gemfile Gemfile.lock  /ToCSA/
+COPY Gemfile Gemfile.lock  /book_share/
 
 RUN gem install bundler
-RUN bundle config set build.rgeo --with-geos-dir=/usr
 RUN bundle
 
 COPY . .
