@@ -11,11 +11,14 @@ RUN apt-get update -qq && \
 RUN mkdir /book_share
 WORKDIR /book_share
 
-COPY Gemfile Gemfile.lock  /book_share/
-
-RUN gem install bundler
-RUN bundle
+COPY Gemfile Gemfile.lock /book_share/
+RUN gem install bundler && bundle install
 
 COPY . .
+ENV RAILS_ENV=production
+ENV RACK_ENV=production
+ENV PORT=3000
 
-# RUN ["/bin/bash", "-c", "source .env"]
+EXPOSE $PORT
+
+CMD bundle exec rails server -p $PORT -e production
