@@ -1,0 +1,46 @@
+version: '3'
+services:
+  db:
+    image: 'postgis/postgis:14-3.4-alpine'
+    platform: linux/amd64
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_USER: 'postgres'
+    networks:
+      tocsa-net:
+
+  redis:
+    image: 'redis:6-alpine'
+    ports:
+      - '6379:6379'
+    networks:
+      tocsa-net:
+
+  web:
+    build: .
+    platform: linux/arm64/v8
+    volumes:
+      - .:/ToCSA/
+      - bundle-data:/usr/local/bundle
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    command: /bin/sh -c "bundle && exec rails s -p 3000 -b '0.0.0.0'"
+
+    stdin_open: true
+    tty: true
+    environment:
+      RAILS_ENV: 'development'
+    networks:
+      tocsa-net:
+
+networks:
+  tocsa-net:
+
+volumes:
+  bundle-data:
