@@ -21,4 +21,6 @@ ENV PORT=3000
 
 EXPOSE $PORT
 
+RUN rm -f /book_share/tmp/pids/server.pid
+
 CMD bundle exec rails server -p $PORT -e production
