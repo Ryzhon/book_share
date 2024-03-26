@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module Books
   class CommentsController < ApplicationController
     before_action :set_book
+    before_action :set_comment, only: [:destroy]
 
     def index
       @comments = @book.comments
@@ -21,10 +24,19 @@ module Books
       end
     end
 
+    def destroy
+      @comment.destroy
+      render json: { message: 'コメントが削除されました。' }
+    end
+
     private
 
     def set_book
       @book = Book.find(params[:book_id])
+    end
+
+    def set_comment
+      @comment = @book.comments.find(params[:id])
     end
 
     def comment_params
