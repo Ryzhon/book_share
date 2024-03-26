@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   resources :books
   resources :genres, only: %i[create index destroy]
   resources :tags, only: %i[create index destroy]
-
-  # Defines the root path route ("/")
-  # root "posts#index"
+  resources :books do
+    resources :comments, module: 'books'
+  end
+  resources :users do
+    resources :comments, module: 'users'
+  end
 end
