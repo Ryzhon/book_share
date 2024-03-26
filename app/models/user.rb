@@ -4,6 +4,7 @@ class User < ApplicationRecord
   authenticates_with_sorcery!
 
   has_many :api_keys, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   validates :password, length: { minimum: 3 }
   validates :password, confirmation: true
