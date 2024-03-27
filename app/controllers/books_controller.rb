@@ -18,7 +18,7 @@ class BooksController < ApplicationController
     )
   end
 
-  # GET /books/:id
+  # GET /books/:isbn
   def show
     render json: @book.as_json(include: { tags: { only: %i[id name] }, genre: { only: %i[id name] } })
   end
@@ -44,7 +44,7 @@ class BooksController < ApplicationController
     end
   end
 
-  # DELETE /books/:id
+  # DELETE /books/:isbn
   def destroy
     @book.destroy
     render json: { message: 'Book was successfully deleted.' }
@@ -54,7 +54,10 @@ class BooksController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_book
-    @book = Book.find(params[:id])
+    isbn = params[:id]
+    @book = Book.find_by(isbn:)
+
+    render json: { error: 'Book not found' }, status: :not_found unless @book
   end
 
   # Only allow a list of trusted parameters through.
